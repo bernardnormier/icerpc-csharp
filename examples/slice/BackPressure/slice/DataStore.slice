@@ -1,0 +1,10 @@
+// Copyright (c) ZeroC, Inc.
+
+mode = Slice1
+
+module BackPressure
+
+interface DataStore {
+    [oneway] upload(data: Sequence<uint8>)
+    sleep(seconds: int32)
+}
