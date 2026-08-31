@@ -21,4 +21,7 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("IceRpc.Tests.Common")]
 [assembly: InternalsVisibleTo("IceRpc.Quic.Tests")]
 
+// Make internals visible to IceRpc.Compressor for the PipeWriterExtensions.WriteAsync helper.
+[assembly: InternalsVisibleTo("IceRpc.Compressor")]
+
 [assembly: InternalsVisibleTo("IceRpc.Compressor.Tests")] // For GetPayloadWriter

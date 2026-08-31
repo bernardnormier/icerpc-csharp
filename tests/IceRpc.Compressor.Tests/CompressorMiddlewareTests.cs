@@ -36,8 +36,8 @@ public class CompressorMiddlewareTests
         OutgoingResponse response = await sut.DispatchAsync(request);
 
         // Assert
-        PipeWriter payloadWriter = response.GetPayloadWriter(output);
-        await payloadWriter.WriteAsync(_payload);
+        var payloadWriter = (Transports.ReadOnlySequencePipeWriter)response.GetPayloadWriter(output);
+        await payloadWriter.WriteAsync(new ReadOnlySequence<byte>(_payload), endStream: true, default);
 
         // Rewind the out stream and check that it was correctly compressed.
         outStream.Seek(0, SeekOrigin.Begin);
