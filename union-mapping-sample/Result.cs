@@ -18,59 +18,66 @@ public readonly record struct Failure<T>(T Value);
 [Union]
 public readonly partial struct Result<TSuccess, TFailure> : IUnion, IEquatable<Result<TSuccess, TFailure>>
 {
+    private enum Kind : byte
+    {
+        None,
+        Success,
+        Failure,
+    }
+
     private readonly TSuccess _success;
     private readonly TFailure _failure;
-    private readonly byte _tag; // 0 = default (no value), 1 = success, 2 = failure
+    private readonly Kind _kind;
 
     public Result(Success<TSuccess> value)
     {
         _success = value.Value;
         _failure = default!;
-        _tag = 1;
+        _kind = Kind.Success;
     }
 
     public Result(Failure<TFailure> value)
     {
         _success = default!;
         _failure = value.Value;
-        _tag = 2;
+        _kind = Kind.Failure;
     }
 
-    public object? Value => _tag switch
+    public object? Value => _kind switch
     {
-        1 => new Success<TSuccess>(_success),
-        2 => new Failure<TFailure>(_failure),
+        Kind.Success => new Success<TSuccess>(_success),
+        Kind.Failure => new Failure<TFailure>(_failure),
         _ => null,
     };
 
-    public bool HasValue => _tag != 0;
+    public bool HasValue => _kind != Kind.None;
 
     public bool TryGetValue(out Success<TSuccess> value)
     {
         value = new(_success);
-        return _tag == 1;
+        return _kind == Kind.Success;
     }
 
     public bool TryGetValue(out Failure<TFailure> value)
     {
         value = new(_failure);
-        return _tag == 2;
+        return _kind == Kind.Failure;
     }
 
     public bool Equals(Result<TSuccess, TFailure> other) =>
-        _tag == other._tag && _tag switch
+        _kind == other._kind && _kind switch
         {
-            1 => EqualityComparer<TSuccess>.Default.Equals(_success, other._success),
-            2 => EqualityComparer<TFailure>.Default.Equals(_failure, other._failure),
+            Kind.Success => EqualityComparer<TSuccess>.Default.Equals(_success, other._success),
+            Kind.Failure => EqualityComparer<TFailure>.Default.Equals(_failure, other._failure),
             _ => true,
         };
 
     public override bool Equals(object? obj) => obj is Result<TSuccess, TFailure> other && Equals(other);
 
-    public override int GetHashCode() => _tag switch
+    public override int GetHashCode() => _kind switch
     {
-        1 => HashCode.Combine(_tag, _success),
-        2 => HashCode.Combine(_tag, _failure),
+        Kind.Success => HashCode.Combine(_kind, _success),
+        Kind.Failure => HashCode.Combine(_kind, _failure),
         _ => 0,
     };
 
