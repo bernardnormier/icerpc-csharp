@@ -14,7 +14,7 @@ namespace TwoD;
 
 internal partial union Shape(Shape.Circle, Shape.Rectangle, Shape.Point, Shape.Unknown) : IEquatable<Shape>
 {
-    public sealed partial record class Circle(double Radius)
+    internal sealed partial record class Circle(double Radius)
     {
         public const int Discriminant = 0;
 
@@ -30,7 +30,7 @@ internal partial union Shape(Shape.Circle, Shape.Rectangle, Shape.Point, Shape.U
         }
     }
 
-    public sealed partial record class Rectangle(double Width, double Height)
+    internal sealed partial record class Rectangle(double Width, double Height)
     {
         public const int Discriminant = 1;
 
@@ -47,7 +47,7 @@ internal partial union Shape(Shape.Circle, Shape.Rectangle, Shape.Point, Shape.U
         }
     }
 
-    public sealed partial record class Point
+    internal sealed partial record class Point
     {
         public const int Discriminant = 2;
 
@@ -63,7 +63,7 @@ internal partial union Shape(Shape.Circle, Shape.Rectangle, Shape.Point, Shape.U
     }
 
     /// <summary>Represents a variant not defined in the local Slice definition of unchecked enum 'Shape'.</summary>
-    public sealed partial record class Unknown(int Discriminant, ReadOnlyMemory<byte> Fields)
+    internal sealed partial record class Unknown(int Discriminant, ReadOnlyMemory<byte> Fields)
     {
         [EditorBrowsable(EditorBrowsableState.Never)]
         internal void Encode(ref SliceEncoder encoder)
@@ -89,7 +89,7 @@ internal partial union Shape(Shape.Circle, Shape.Rectangle, Shape.Point, Shape.U
 
 internal static class ShapeSliceEncoderExtensions
 {
-    public static void EncodeShape(this ref SliceEncoder encoder, Shape value)
+    internal static void EncodeShape(this ref SliceEncoder encoder, Shape value)
     {
         switch (value)
         {
@@ -113,7 +113,7 @@ internal static class ShapeSliceEncoderExtensions
 
 internal static class ShapeSliceDecoderExtensions
 {
-    public static Shape DecodeShape(this ref SliceDecoder decoder)
+    internal static Shape DecodeShape(this ref SliceDecoder decoder)
     {
         return decoder.DecodeVarInt32() switch
         {

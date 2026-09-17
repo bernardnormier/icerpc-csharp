@@ -14,7 +14,7 @@ namespace VisitorCenter;
 internal partial union GreeterError(GreeterError.EmptyName, GreeterError.NameTooLong, GreeterError.Unknown)
     : IEquatable<GreeterError>
 {
-    public sealed partial record class EmptyName
+    internal sealed partial record class EmptyName
     {
         public const int Discriminant = 0;
 
@@ -29,7 +29,7 @@ internal partial union GreeterError(GreeterError.EmptyName, GreeterError.NameToo
         }
     }
 
-    public sealed partial record class NameTooLong(int MaxLength)
+    internal sealed partial record class NameTooLong(int MaxLength)
     {
         public const int Discriminant = 1;
 
@@ -45,7 +45,7 @@ internal partial union GreeterError(GreeterError.EmptyName, GreeterError.NameToo
         }
     }
 
-    public sealed partial record class Unknown(int Discriminant, ReadOnlyMemory<byte> Fields)
+    internal sealed partial record class Unknown(int Discriminant, ReadOnlyMemory<byte> Fields)
     {
         [EditorBrowsable(EditorBrowsableState.Never)]
         internal void Encode(ref SliceEncoder encoder)
@@ -71,7 +71,7 @@ internal partial union GreeterError(GreeterError.EmptyName, GreeterError.NameToo
 
 internal static class GreeterErrorSliceEncoderExtensions
 {
-    public static void EncodeGreeterError(this ref SliceEncoder encoder, GreeterError value)
+    internal static void EncodeGreeterError(this ref SliceEncoder encoder, GreeterError value)
     {
         switch (value)
         {
@@ -92,7 +92,7 @@ internal static class GreeterErrorSliceEncoderExtensions
 
 internal static class GreeterErrorSliceDecoderExtensions
 {
-    public static GreeterError DecodeGreeterError(this ref SliceDecoder decoder)
+    internal static GreeterError DecodeGreeterError(this ref SliceDecoder decoder)
     {
         return decoder.DecodeVarInt32() switch
         {
