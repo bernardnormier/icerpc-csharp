@@ -16,7 +16,7 @@ public readonly record struct Failure<T>(T Value);
 /// type maps to this struct. Use pattern matching to access the value; <see cref="HasValue" /> and
 /// <see cref="TryGetValue(out Success{TSuccess})" /> exist for the compiler.</summary>
 [Union]
-public readonly partial struct Result<TSuccess, TFailure> : IUnion, IEquatable<Result<TSuccess, TFailure>>
+public readonly partial record struct Result<TSuccess, TFailure> : IUnion
 {
     private enum Kind : byte
     {
@@ -64,30 +64,7 @@ public readonly partial struct Result<TSuccess, TFailure> : IUnion, IEquatable<R
         return _kind == Kind.Failure;
     }
 
-    public bool Equals(Result<TSuccess, TFailure> other) =>
-        _kind == other._kind && _kind switch
-        {
-            Kind.Success => EqualityComparer<TSuccess>.Default.Equals(_success, other._success),
-            Kind.Failure => EqualityComparer<TFailure>.Default.Equals(_failure, other._failure),
-            _ => true,
-        };
-
-    public override bool Equals(object? obj) => obj is Result<TSuccess, TFailure> other && Equals(other);
-
-    public override int GetHashCode() => _kind switch
-    {
-        Kind.Success => HashCode.Combine(_kind, _success),
-        Kind.Failure => HashCode.Combine(_kind, _failure),
-        _ => 0,
-    };
-
     public override string ToString() => Value?.ToString() ?? "";
-
-    public static bool operator ==(Result<TSuccess, TFailure> left, Result<TSuccess, TFailure> right) =>
-        left.Equals(right);
-
-    public static bool operator !=(Result<TSuccess, TFailure> left, Result<TSuccess, TFailure> right) =>
-        !left.Equals(right);
 }
 
 public static class ResultSliceEncoderExtensions
